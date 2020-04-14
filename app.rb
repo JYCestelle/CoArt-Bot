@@ -70,8 +70,18 @@ post "/signup" do
 	elsif params[:number].nil? || params[:first_name].nil?
 		"You didn't enter all of the input fields."
 	else
+		client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+		message = "Hi" + params[:first_name] + ", welcome to BotName! I can respond to who, what, where, when and why. If you're stuck, type help."
+
 		session['first_name'] = params['first_name']
 		session['number'] = params['number']
+
+		  # this will send a message from any end point
+		client.api.account.messages.create(
+			from: ENV["TWILIO_FROM"],
+			to: params[:number],
+			body: message
+		)
 	end
 	"Hi there, #{ params[:first_name]}.<br/>
 	Your number is #{ params[:number]}"
