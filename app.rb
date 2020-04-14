@@ -70,7 +70,7 @@ post "/signup" do
 		"You didn't enter all of the input fields."
 	else
 		client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
-		message = "Hi " + params[:first_name] + ", welcome to BotName! I can respond to who, what, where, when and why. If you're stuck, type help."
+		message = "Hi " + params[:first_name] + ", welcome to CoArt-Bot! I can respond to who, what, where, when and why. If you're stuck, type help."
 
 		session['first_name'] = params['first_name']
 		session['number'] = params['number']
@@ -100,11 +100,12 @@ get '/sms/incoming' do
 	sender = params[:From] || ""
   
 	if session["counter"] == 1
-	  message = "Thanks for your first message. From #{sender} saying #{body}"
-	  media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+		message = "Thanks for your first message. From #{sender} saying #{body}"
+		media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
 	else
-	  message = "Thanks for message number #{ session["counter"] }. From #{sender} saying #{body}"
-	  media = nil
+		message = determine_response body
+	  # message = "Thanks for message number #{ session["counter"] }. From #{sender} saying #{body}"
+	  # media = nil
 	end
 	  
 	# Build a twilio response object 
