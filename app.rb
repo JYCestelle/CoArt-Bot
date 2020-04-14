@@ -3,15 +3,17 @@ require "sinatra/reloader" if development?
 require 'twilio-ruby'
 
 
-configure :development do
-	require 'dotenv'
-	Dotenv.load
-  end
+
 
 # a very basic sinatra setup
 # with just one route 
 
 enable :sessions
+
+configure :development do
+	require 'dotenv'
+	Dotenv.load
+  end
 
 greetings = ['Hey there',"What's up!", "Good to see you", 'Welcome back!']
 varied_greeting = ['Good Morning~',"Good Afternoon~", "Good Evening~"]
@@ -52,6 +54,7 @@ end
 get '/signup' do
 	# check whether user signup or not.
 	if not(session['first_name'].nil? || session['number'].nil?) 
+		
 		"Hi #{session['first_name']}, you have already signed up. Begin the arwork exploration journey with me."
 	elsif check_code params[:code], sercert_code
 		403
