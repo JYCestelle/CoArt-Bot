@@ -231,7 +231,7 @@ def determine_media_response body
 	  end
 	  return gif_url
 	 end
-	# nil
+	 nil
   end
 
 # method to check user' input
