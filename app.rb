@@ -3,6 +3,7 @@ require "sinatra/reloader" if development?
 require 'twilio-ruby'
 require 'httparty'
 require 'giphy'
+require 'open_weather'
 
 
 
@@ -201,6 +202,10 @@ def determine_response body
 			res += jokes.sample
 		elsif check_input body, funny_word
 			res += "Nice one right lol."
+		elsif body == "weatherpittsburgh"
+			options = { units: "metric", APPID: ENV["OPENWEATHER_API_KEY"] }
+			response = OpenWeather::Current.city("Pittsburgh, PA", options)
+			res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
