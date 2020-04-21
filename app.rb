@@ -6,7 +6,7 @@ require 'giphy'
 require 'open_weather'
 
 configure :development do
-	require 'xxx'
+	require 'better_errors'
 end
 
 
@@ -148,6 +148,14 @@ get "/test/conversation" do
 end
 
 
+# get "/test/api" do
+# 	if params [:Body] == "sunflower"
+# 		response = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers' )
+# 	end 
+# 	response
+# end 
+
+
 get "/test/giphy" do
 
 	Giphy::Configuration.configure do |config|
@@ -208,6 +216,8 @@ def determine_response body
 			options = { units: "metric", APPID: ENV["OPENWEATHER_API_KEY"] }
 			response = OpenWeather::Current.city("Pittsburgh, PA", options)
 			res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
+		elsif body == "sunflower"
+			res = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers' )
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body

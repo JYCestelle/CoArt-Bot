@@ -11,6 +11,6 @@ gem 'open-weather', '0.11'
 gem 'json', '2.3.0'
 
 group :development do
-    gem "xxxx"
+    gem "better_errors"
 end
 
