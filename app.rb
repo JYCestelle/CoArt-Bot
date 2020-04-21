@@ -217,7 +217,7 @@ def determine_media_response body
 	  config.api_key = ENV["GIPHY_API_KEY"]
 	end
   
-	if q == "image"
+	if q == "images"
 	  giphy_search = "hello"
 	else
 	  giphy_search = nil
