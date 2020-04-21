@@ -2,6 +2,9 @@ require 'sinatra'
 require "sinatra/reloader" if development?
 require 'twilio-ruby'
 require 'httparty'
+require 'giphy'
+
+
 
 
 
@@ -105,8 +108,7 @@ get '/sms/incoming' do
 		media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
 	else
 		message = determine_response body
-	  # message = "Thanks for message number #{ session["counter"] }. From #{sender} saying #{body}"
-	  # media = nil
+		media = determine_media_response body
 	end
 	  
 	# Build a twilio response object 
@@ -141,6 +143,28 @@ get "/test/conversation" do
 	end
 	response 
 end
+
+
+get "/test/giphy" do
+
+	Giphy::Configuration.configure do |config|
+	  config.api_key = ENV["GIPHY_API_KEY"]
+	end
+  
+	results = Giphy.search( "lolz", { limit: 25 } )
+  
+	unless results.empty?
+	  gif = results.sample
+	  gif_url = gif.original_image.url
+	  "I found this image: <img src='#{gif_url}' />"
+  
+	else
+	  " I couldn't find a gif for that "
+	end
+  
+  
+end
+
 
 def determine_response body 
 		#keyword lists
@@ -184,6 +208,31 @@ def determine_response body
 		end
 		res  
 end 
+
+def determine_media_response body
+
+	q = body.to_s.downcase.strip
+  
+	Giphy::Configuration.configure do |config|
+	  config.api_key = ENV["GIPHY_API_KEY"]
+	end
+  
+	if q == "image"
+	  giphy_search = "hello"
+	else
+	  giphy_search = nil
+	end
+  
+	unless giphy_search.nil?
+	  results = Giphy.search( giphy_search, { limit: 25 } )
+	  unless results.empty?
+		gif = results.sample
+		gif_url = gif.original_image.url
+	  end
+	  return gif_url
+	 end
+	# nil
+  end
 
 # method to check user' input
 def check_input body, word_set
