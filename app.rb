@@ -1,6 +1,7 @@
 require 'sinatra'
 require "sinatra/reloader" if development?
 require 'twilio-ruby'
+require 'httparty'
 
 
 
@@ -177,8 +178,9 @@ def determine_response body
 		elsif check_input body, funny_word
 			res += "Nice one right lol."
 		else
-			res += "Sorry, your input cannot be understood by the bot.<br>
-							Try using two parameters called Body and From."
+			# Sending unexpected answer to the Slack Channel
+			res = send_to_slack body
+			#message = error_response
 		end
 		res  
 end 
@@ -198,6 +200,16 @@ def check_code code, sercert
 	return code.nil? || code != sercert
 end 
 
+# 
+def send_to_slack message
+
+	slack_webhook = ENV['SLACK_WEBHOOK']
+  
+	formatted_message = "*Recently Received:*\n"
+	formatted_message += "#{message} "
+	HTTParty.post slack_webhook, body: {text: formatted_message.to_s, username: "CoArtBot" }.to_json, headers: {'content-type' => 'application/json'}
+  
+  end
 
 error 403 do
  "Access Forbidden"
