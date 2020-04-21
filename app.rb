@@ -5,7 +5,9 @@ require 'httparty'
 require 'giphy'
 require 'open_weather'
 
-
+configure :development do
+	require 'xxx'
+end
 
 
 

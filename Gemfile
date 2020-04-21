@@ -10,4 +10,7 @@ gem 'giphy', '3.0.0'
 gem 'open-weather', '0.11'
 gem 'json', '2.3.0'
 
+group :development do
+    gem "xxxx"
+end
 
