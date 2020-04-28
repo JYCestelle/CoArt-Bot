@@ -1,1 +1,1 @@
-# CoArt-Bot
+# alexa-skills-out-of-office
