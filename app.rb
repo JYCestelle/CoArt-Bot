@@ -178,8 +178,7 @@ def determine_response body, sender
 		facts = IO.readlines("facts.txt")
 
 		if check_input body, greeting_word
-			send_sms_to sender, "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas 
-									and get inspirations from artworks exploration."
+			send_sms_to sender, "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 			sleep(1)
 			#send_sms_to sender, "How are you?"
 			res += "How are you?"
