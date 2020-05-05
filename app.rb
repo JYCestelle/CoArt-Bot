@@ -180,8 +180,10 @@ def determine_response body, sender
 		if check_input body, greeting_word
 			send_sms_to sender, "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 			sleep(1)
+			send_sms_to sender, "How are you?"
+			sleep(1)
 			#send_sms_to sender, "How are you?"
-			res += "How are you?"
+			res += " "
 			# res += "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 		elsif check_input body, who_word
 			res += "It's CoArt Bot created by Estelle Jiang. <br>
