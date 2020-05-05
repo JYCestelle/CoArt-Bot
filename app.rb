@@ -97,7 +97,7 @@ get '/sms/incoming' do
 	session["counter"] ||= 1
 	body = params[:Body] || ""
 	sender = params[:From] || ""
-	session[]
+	session['last_intent'] ||= nil
   
 	if session["counter"] == 1
 		message = "Thanks for your first message. From #{sender} saying #{body}"
