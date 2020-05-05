@@ -176,11 +176,13 @@ def determine_response body, sender
 		res = ''
 		jokes = IO.readlines("jokes.txt")
 		facts = IO.readlines("facts.txt")
+
 		if check_input body, greeting_word
 			send_sms_to sender, "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas 
 									and get inspirations from artworks exploration."
 			sleep(1)
-			send_sms_to sender, "How are you?"
+			#send_sms_to sender, "How are you?"
+			res += "How are you?"
 			# res += "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 		elsif check_input body, who_word
 			res += "It's CoArt Bot created by Estelle Jiang. <br>
