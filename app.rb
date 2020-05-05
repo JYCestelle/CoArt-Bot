@@ -93,14 +93,6 @@ post "/signup" do
 	Your number is #{ params[:number]}"
 end
 
-# can be used if no sercert code is required.
-# get '/signup/:first_name/:number' do
-# 	session['first_name'] = params['first_name']
-# 	session['number'] = params['number']
-# 	"Hi there, #{ params[:first_name]}.<br/>
-# 	Your number is #{ params[:number]}"
-# end
-
 get '/sms/incoming' do
 	session["counter"] ||= 1
 	body = params[:Body] || ""
@@ -110,7 +102,7 @@ get '/sms/incoming' do
 		message = "Thanks for your first message. From #{sender} saying #{body}"
 		media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
 	else
-		message = determine_response body
+		message = determine_response body, sender
 		media = determine_media_response body
 	end
 	  
@@ -137,47 +129,38 @@ get '/sms/incoming' do
 end
 
 # return needed information based on the user's input 
-get "/test/conversation" do
-	if params[:Body].nil? || params[:From].nil? #check if parameters are blank
-		response = "Sorry, I cannot understand what you're saying. <br>
-						Try to use parameters called Body and From."
-	else
-		response = determine_response params[:Body]
-	end
-	response 
-end
+# get "/test/conversation" do
+# 	if params[:Body].nil? || params[:From].nil? #check if parameters are blank
+# 		response = "Sorry, I cannot understand what you're saying. <br>
+# 						Try to use parameters called Body and From."
+# 	else
+# 		response = determine_response params[:Body]
+# 	end
+# 	response 
+# end
 
 
-# get "/test/api" do
-# 	if params [:Body] == "sunflower"
-# 		response = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers' )
-# 	end 
-# 	response
-# end 
+# get "/test/giphy" do
 
-
-get "/test/giphy" do
-
-	Giphy::Configuration.configure do |config|
-	  config.api_key = ENV["GIPHY_API_KEY"]
-	end
+# 	Giphy::Configuration.configure do |config|
+# 	  config.api_key = ENV["GIPHY_API_KEY"]
+# 	end
   
-	results = Giphy.search( "lolz", { limit: 25 } )
+# 	results = Giphy.search( "lolz", { limit: 25 } )
   
-	unless results.empty?
-	  gif = results.sample
-	  gif_url = gif.original_image.url
-	  "I found this image: <img src='#{gif_url}' />"
+# 	unless results.empty?
+# 	  gif = results.sample
+# 	  gif_url = gif.original_image.url
+# 	  "I found this image: <img src='#{gif_url}' />"
   
-	else
-	  " I couldn't find a gif for that "
-	end
+# 	else
+# 	  " I couldn't find a gif for that "
+# 	end
   
-  
-end
+# end
 
 
-def determine_response body 
+def determine_response body, sender 
 		#keyword lists
 		greeting_word = ['hey', 'hello', 'hi']
 		who_word = ['who']
@@ -194,7 +177,11 @@ def determine_response body
 		jokes = IO.readlines("jokes.txt")
 		facts = IO.readlines("facts.txt")
 		if check_input body, greeting_word
-			res += "Hi there, this app will help you explore the popular artworks everyday.<br>"
+			send_sms_to sender, "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas 
+									and get inspirations from artworks exploration."
+			sleep(1)
+			send_sms_to sender, "How are you?"
+			# res += "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 		elsif check_input body, who_word
 			res += "It's CoArt Bot created by Estelle Jiang. <br>
 							If you want to know more about me, you can input 'fact' to the Body parameter."
@@ -250,6 +237,15 @@ def determine_media_response body
 	 end
 	 nil
   end
+
+def send_sms_to send_to, message
+client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+client.api.account.messages.create(
+	from: ENV["TWILIO_FROM"],
+	to: send_to,
+	body: message
+)
+end
 
 # method to check user' input
 def check_input body, word_set
