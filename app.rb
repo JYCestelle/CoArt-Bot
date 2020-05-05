@@ -164,7 +164,7 @@ end
 def determine_response body, sender 
 		#keyword lists
 		greeting_word = ['hey', 'hello', 'hi']
-		greeting_response = {'I am good', "I'm fine.", "I'm pretty good.", 'pretty good.', "It's okay."}
+		greeting_response = ['I am good', "I'm fine.", "I'm pretty good.", 'pretty good.', "It's okay."]
 		who_word = ['who']
 		what_word = ['what', 'help', 'features', 'functions', 'actions']
 		where_word = ['where']
