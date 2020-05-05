@@ -186,15 +186,14 @@ def determine_response body, sender
 			send_sms_to sender, "How are you?"
 			sleep(3)
 			#send_sms_to sender, "How are you?"
-			res += "test."
+			res += ""
 			# res += "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 		elsif check_input body, greeting_response
 			session['last_intent'] = "museum_intro"
 			res += "Okay, let's start from museum. Do you know the Metropolitan Museum of Art?"
 		elsif session['last_intent'] == "museum_intro"   
 		#elsif check_input body, confirm
-			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', \n
-			is the largest art museum in the United States. With 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
+			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. With 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
 			session['last_intent'] = 'intro_done'
 		elsif check_input body, who_word
 			res += "It's CoArt Bot created by Estelle Jiang. <br>
@@ -237,18 +236,19 @@ def determine_media_response body
   
 	if q == "images"
 	  giphy_search = "hello"
-	else 
-	  giphy_search = nil
+	elsif q == "fine"
+	  giphy_search = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg?la=en'
 	end
+	return giphy_search
   
-	unless giphy_search.nil?
+	/#unless giphy_search.nil?
 	  results = Giphy.search( giphy_search, { limit: 25 } )
 	  unless results.empty?
 		gif = results.sample
 		gif_url = gif.original_image.url
 	  end
 	  return gif_url
-	 end
+	 end #/
 	 nil
   end
 
