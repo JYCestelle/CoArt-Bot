@@ -237,7 +237,7 @@ def determine_media_response body
 	if q == "images"
 	  giphy_search = "hello"
 	elsif q == "fine"
-	  giphy_search = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg?la=en'
+	  giphy_search = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
 	end
 	return giphy_search
   
