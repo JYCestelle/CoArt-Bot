@@ -190,9 +190,9 @@ def determine_response body, sender
 		elsif check_input body, greeting_response
 			session['last_intent'] = "museum_intro"
 			res += "Okay, let's start from museum. Do you know the Metropolitan Museum of Art?"
+			if 
 		elsif session['last_intent'] = "museum_intro"   
-			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States." 
-			 + "With 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
+			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. With 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
 		elsif check_input body, who_word
 			res += "It's CoArt Bot created by Estelle Jiang. <br>
 							If you want to know more about me, you can input 'fact' to the Body parameter."
