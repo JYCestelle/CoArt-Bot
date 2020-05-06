@@ -128,7 +128,7 @@ get '/sms/incoming' do
 	  end
 	  
 	# increment the session counter
-	session["counter"] += 1
+	#session["counter"] += 1
 	  
 	# send a response to twilio 
 	content_type 'text/xml'
