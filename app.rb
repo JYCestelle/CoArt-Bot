@@ -99,36 +99,32 @@ get '/sms/incoming' do
 	body = params[:Body] || ""
 	sender = params[:From] || ""
 	session['last_intent'] ||= nil
-
-	message = "Thank you for the messages."
-	media = "https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg"
   
-	# if session["counter"] == 1
-	# 	message = "Thank for your first message."
-	# 	#media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
-	# 	media = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
-	# 	#media = nil
-	# else
-	# 	message = determine_response body, sender
-	# 	#media = determine_media_response body
-	# 	media = nil
-	# end
+	if session["counter"] == 1
+		message = "Thank for your first message."
+		media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+		#media = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
+		#media = nil
+	else
+		message = determine_response body, sender
+		#media = determine_media_response body
+		media = nil
+	end
 
 	# Build a twilio response object 
 	twiml = Twilio::TwiML::MessagingResponse.new do |r|
 		r.message do |m|
 		# add the text of the response
 		  m.body( message )
-		  m.media (media)
 		  # add media if it is defined
-		#   unless media.nil?
-		# 	m.media( media )
-		#   end
+		  unless media.nil?
+			m.media( media )
+		  end
 		end
 	  end
 	  
 	# increment the session counter
-	#session["counter"] += 1
+	session["counter"] += 1
 	  
 	# send a response to twilio 
 	content_type 'text/xml'
@@ -201,8 +197,8 @@ def determine_response body, sender
 			res += "Okay, let's start from museum. Do you know the Metropolitan Museum of Art?"
 		elsif session['last_intent'] == "museum_intro"   
 		#elsif check_input body, confirm
-			image_sms sender, "test", met_url 
-			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. With 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
+			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. \nWith 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
+			image_sms sender, res, met_url 
 			session['last_intent'] = 'intro_done'
 		elsif check_input body, who_word
 			res += "It's CoArt Bot created by Estelle Jiang. <br>
@@ -212,17 +208,7 @@ def determine_response body, sender
 		elsif check_input body, where_word
 			res += "I'm in Pittsburgh~<br>"
 		elsif check_input body, when_word
-			#res += "The bot is made in Spring 2020.<br>"
-			client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
-
-			message = client.messages.create(
-                             body: 'Hello there!',
-                             from: ENV["TWILIO_FROM"],
-                             media_url: ['https://demo.twilio.com/owl.png'],
-                             to: sender
-						   )	
-				puts message
-				res += "test image."		   
+			res += "The bot is made in Spring 2020.<br>"	   
 		elsif check_input body, why_word
 			res += "It was made for class project of 49714-pfop."
 		elsif check_input body, fact_word
@@ -261,15 +247,16 @@ def determine_media_response body
 	  giphy_search = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
 	end
 	return giphy_search
-  
-	/#unless giphy_search.nil?
-	  results = Giphy.search( giphy_search, { limit: 25 } )
-	  unless results.empty?
-		gif = results.sample
-		gif_url = gif.original_image.url
-	  end
-	  return gif_url
-	 end #/
+
+	# unless giphy_search.nil?
+	#   results = Giphy.search( giphy_search, { limit: 25 } )
+	#   unless results.empty?
+	# 	gif = results.sample
+	# 	gif_url = gif.original_image.url
+	#   end
+	#   return gif_url
+	#  end 
+
 	 nil
   end
 
@@ -290,6 +277,13 @@ def image_sms send_to, message, media
 		body: message,    
 		media_url:media   
 	)
+	# client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+	# message = client.messages.create(
+	# 				 body: 'Hello there!',
+	# 				 from: ENV["TWILIO_FROM"],
+	# 				 media_url: ['https://demo.twilio.com/owl.png'],
+	# 				 to: sender
+	# 			   )	
 end 
 
 
