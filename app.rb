@@ -100,7 +100,7 @@ get '/sms/incoming' do
 	session['last_intent'] ||= nil
   
 	if session["counter"] == 1
-		message = "Thanks for your first message. From #{sender} saying #{body}"
+		message = "Thanks for your first message. From #{sender}."
 		media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
 	else
 		message = determine_response body, sender
@@ -179,11 +179,13 @@ def determine_response body, sender
 		res = ''
 		jokes = IO.readlines("jokes.txt")
 		facts = IO.readlines("facts.txt")
+		met_url = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
 
 		if check_input body, greeting_word
 			send_sms_to sender, "Hi🙌🏼, this is CoArt🤖! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 			sleep(1)
 			send_sms_to sender, "How are you?"
+			#image_sms sender, "test", met_url 
 			sleep(3)
 			#send_sms_to sender, "How are you?"
 			res += ""
@@ -191,8 +193,9 @@ def determine_response body, sender
 		elsif check_input body, greeting_response
 			session['last_intent'] = "museum_intro"
 			res += "Okay, let's start from museum. Do you know the Metropolitan Museum of Art?"
-		elsif session['last_intent'] == "museum_intro"   
-		#elsif check_input body, confirm
+		#elsif session['last_intent'] == "museum_intro"   
+		elsif check_input body, confirm
+			image_sms sender, "test", met_url 
 			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. With 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
 			session['last_intent'] = 'intro_done'
 		elsif check_input body, who_word
@@ -260,6 +263,17 @@ client.api.account.messages.create(
 	body: message
 )
 end
+
+def image_sms send_to, message, media
+	client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+	client.api.account.messages.create(     
+		from: ENV["TWILIO_FROM"],      
+		to: send_to,     
+		body: message,    
+		media_url:media   
+	)
+end 
+
 
 # method to check user' input
 def check_input body, word_set
