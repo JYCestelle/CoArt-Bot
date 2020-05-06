@@ -4,6 +4,7 @@ require 'twilio-ruby'
 require 'httparty'
 require 'giphy'
 require 'open_weather'
+require 'met_museum'
 
 configure :development do
 	require 'better_errors'
@@ -194,8 +195,8 @@ def determine_response body, sender
 		elsif check_input body, greeting_response
 			session['last_intent'] = "museum_intro"
 			res += "Okay, let's start from museum. Do you know the Metropolitan Museum of Art?"
-		#elsif session['last_intent'] == "museum_intro"   
-		elsif check_input body, confirm
+		elsif session['last_intent'] == "museum_intro"   
+		#elsif check_input body, confirm
 			image_sms sender, "test", met_url 
 			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. With 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
 			session['last_intent'] = 'intro_done'
@@ -221,7 +222,8 @@ def determine_response body, sender
 			response = OpenWeather::Current.city("Pittsburgh, PA", options)
 			res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
 		elsif body == "sunflower"
-			res = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers' )
+			response = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers')
+
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
