@@ -101,7 +101,8 @@ get '/sms/incoming' do
   
 	if session["counter"] == 1
 		message = "Thanks for your first message."
-		media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+		#media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+		media = nil
 	else
 		message = determine_response body, sender
 		#media = determine_media_response body
