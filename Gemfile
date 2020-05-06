@@ -9,6 +9,7 @@ gem 'faraday', '0.9'
 gem 'giphy', '3.0.0'
 gem 'open-weather', '0.11'
 gem 'json', '2.3.0'
+gem 'met_museum'
 
 group :development do
     gem "better_errors"

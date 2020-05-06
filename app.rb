@@ -99,27 +99,31 @@ get '/sms/incoming' do
 	body = params[:Body] || ""
 	sender = params[:From] || ""
 	session['last_intent'] ||= nil
+
+	message = "Thank you for the messages."
+	media = "https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg"
   
-	if session["counter"] == 1
-		message = "Thanks for your first message."
-		#media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
-		media = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
-		#media = nil
-	else
-		message = determine_response body, sender
-		#media = determine_media_response body
-		media = nil
-	end
+	# if session["counter"] == 1
+	# 	message = "Thank for your first message."
+	# 	#media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+	# 	media = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
+	# 	#media = nil
+	# else
+	# 	message = determine_response body, sender
+	# 	#media = determine_media_response body
+	# 	media = nil
+	# end
 
 	# Build a twilio response object 
 	twiml = Twilio::TwiML::MessagingResponse.new do |r|
 		r.message do |m|
 		# add the text of the response
 		  m.body( message )
+		  m.media (media)
 		  # add media if it is defined
-		  unless media.nil?
-			m.media( media )
-		  end
+		#   unless media.nil?
+		# 	m.media( media )
+		#   end
 		end
 	  end
 	  
@@ -208,9 +212,19 @@ def determine_response body, sender
 		elsif check_input body, where_word
 			res += "I'm in Pittsburgh~<br>"
 		elsif check_input body, when_word
-			res += "The bot is made in Spring 2020.<br>"
+			#res += "The bot is made in Spring 2020.<br>"
+			client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+
+			message = client.messages.create(
+                             body: 'Hello there!',
+                             from: ENV["TWILIO_FROM"],
+                             media_url: ['https://demo.twilio.com/owl.png'],
+                             to: sender
+						   )	
+				puts message
+				res += "test image."		   
 		elsif check_input body, why_word
-			res += "It was made for class project of 49714-pfop.<br>"
+			res += "It was made for class project of 49714-pfop."
 		elsif check_input body, fact_word
 			res += facts.sample
 		elsif check_input body, joke_word
@@ -222,7 +236,8 @@ def determine_response body, sender
 			response = OpenWeather::Current.city("Pittsburgh, PA", options)
 			res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
 		elsif body == "sunflower"
-			response = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers')
+			response = MetMuseum::Collection.new.search('akasaka', {limit: 1})
+			#response = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers')
 
 		else
 			# Sending unexpected answer to the Slack Channel
