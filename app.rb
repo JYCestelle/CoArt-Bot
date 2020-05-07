@@ -213,13 +213,13 @@ def determine_response body, sender
 			session['last_intent'] = 'begin_explore'
 		elsif check_input body, more_about
 			info_cont = JSON.parse(session['info_table'])
-			res += info_cont['title']
+			#res += info_cont['title']
 			#res += session['info_table']
-			# if info['artist_url'] != ''
-			# 	res += "I knew! It's a really good one. You can go to " + info['artist_url'] + "to take a closer look at this artist. Also, please check out " + info['met_url']
-			# else 
-			# 	res += "I knew! It's really amazing. You can go to " + info['met_url'] + " to check out more information and relevant pieces."
-			# end
+			if info['artist_url'] != ''
+				res += "I knew! It's a really good one. You can go to " + info['artist_url'] + "to take a closer look at this artist. Also, please check out " + info['met_url']
+			else 
+				res += "I knew! It's really amazing. You can go to " + info['met_url'] + " to check out more information and relevant pieces."
+			end
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
