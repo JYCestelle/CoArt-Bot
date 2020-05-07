@@ -177,8 +177,7 @@ def determine_response body, sender
 			send_sms_to sender, "For example, you might think about animal at this moment, then, what animal specifically? You can send me 'monkey'/🐒, 'cat'/🐈, or 'elephant'/🐘." 
 			session['last_intent'] = "begin_explore"
 		elsif check_input body, who_word
-			res += "It's CoArt Bot created by Estelle Jiang. <br>
-							If you want to know more about me, you can input 'fact' to the Body parameter."
+			res += "It's CoArt Bot created by Estelle Jiang. \nIf you want to know more about me, you can input 'fact' to the Body parameter."
 		elsif check_input body, what_word
 			res += "You can ask anything you are interested about me.<br>"
 		elsif check_input body, where_word
@@ -189,16 +188,15 @@ def determine_response body, sender
 			res += "It was made for class project of 49714-pfop."
 		elsif check_input body, fact_word
 			res += facts.sample
-		elsif check_input body, joke_word
-			res += jokes.sample
-		elsif check_input body, funny_word
-			res += "Nice one right lol."
-		elsif body == "weatherpittsburgh"
-			options = { units: "metric", APPID: ENV["OPENWEATHER_API_KEY"] }
-			response = OpenWeather::Current.city("Pittsburgh, PA", options)
-			res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
+		# elsif check_input body, joke_word
+		# 	res += jokes.sample
+		# elsif check_input body, funny_word
+		# 	res += "Nice one right lol."
+		# elsif body == "weatherpittsburgh"
+		# 	options = { units: "metric", APPID: ENV["OPENWEATHER_API_KEY"] }
+		# 	response = OpenWeather::Current.city("Pittsburgh, PA", options)
+		# 	res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
 		elsif session['last_intent'] == "begin_explore"
-		#elsif body == "sunflower" 
 			info = artwork_explorer body 
 			message = "Check what I got for you 🎁📖! This art piece is a " + info['object'] + " and it’s called " + info['title'] + ". Right now, 
 it belongs to " + info['department'] + " department at the MET. It was created by " + info['artist'] + " (" + info['bio'] + "). 
@@ -206,9 +204,10 @@ As you can see, the medium for this art piece is " + info['medium'] + ". 🗂"
 			image_sms sender, message, info['image']
 			sleep(10)
 			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to learn more about this topic. You can also explore some new topic."
-			#session['last_intent'] = ''
+			session['last_intent'] = 'continue_explore'
 		elsif check_input body, next_move
 			res += "Sure, what else you want to explore?"
+			session['last_intetn'] = 'begin_explore'
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
