@@ -136,7 +136,7 @@ def determine_response body, sender
 		greeting_word = ['hey', 'hello', 'hi']
 		greeting_response = ['I am good', "I'm fine.", "I'm pretty good.", 'pretty good.', "It's okay.", 'fine', 'Good']
 		confirm = ['Yes', 'I knew it.', 'Yes, I knew.', 'I have no idea', 'I do not know.', "I don't know"]
-		next_move = ['next topic', 'next keyword', 'new topic']
+		next_move = ['next topic', 'next keyword', 'new topic', 'new']
 		who_word = ['who']
 		what_word = ['what', 'help', 'features', 'functions', 'actions']
 		where_word = ['where']
@@ -207,7 +207,7 @@ As you can see, the medium for this art piece is " + info['medium'] + ". 🗂"
 			session['last_intent'] = 'continue_explore'
 		elsif check_input body, next_move
 			res += "Sure, what else you want to explore?"
-			session['last_intetn'] = 'begin_explore'
+			session['last_intent'] = 'begin_explore'
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
