@@ -131,38 +131,6 @@ get '/sms/incoming' do
 	twiml.to_s
 end
 
-# return needed information based on the user's input 
-# get "/test/conversation" do
-# 	if params[:Body].nil? || params[:From].nil? #check if parameters are blank
-# 		response = "Sorry, I cannot understand what you're saying. <br>
-# 						Try to use parameters called Body and From."
-# 	else
-# 		response = determine_response params[:Body]
-# 	end
-# 	response 
-# end
-
-
-# get "/test/giphy" do
-
-# 	Giphy::Configuration.configure do |config|
-# 	  config.api_key = ENV["GIPHY_API_KEY"]
-# 	end
-  
-# 	results = Giphy.search( "lolz", { limit: 25 } )
-  
-# 	unless results.empty?
-# 	  gif = results.sample
-# 	  gif_url = gif.original_image.url
-# 	  "I found this image: <img src='#{gif_url}' />"
-  
-# 	else
-# 	  " I couldn't find a gif for that "
-# 	end
-  
-# end
-
-
 def determine_response body, sender 
 		#keyword lists
 		greeting_word = ['hey', 'hello', 'hi']
@@ -181,25 +149,32 @@ def determine_response body, sender
 		res = ''
 		jokes = IO.readlines("jokes.txt")
 		facts = IO.readlines("facts.txt")
-		met_url = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
+		met_url = ''
 
 		if check_input body, greeting_word
-			send_sms_to sender, "Hi🙌🏼, this is CoArt🤖! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
+			send_sms_to sender, "Hi 🙌🏼, this is CoArt 🤖! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 			sleep(1)
 			send_sms_to sender, "How are you?"
-			#image_sms sender, "test", met_url 
 			sleep(3)
-			#send_sms_to sender, "How are you?"
 			res += ""
-			# res += "Hi there, this is CoArt! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
 		elsif check_input body, greeting_response
 			session['last_intent'] = "museum_intro"
-			res += "Okay, let's start from museum. Do you know the Metropolitan Museum of Art?"
+			res += "Okay, let's start from museum 🎫🏛. Do you know the Metropolitan Museum of Art?"
 		elsif session['last_intent'] == "museum_intro"   
 		#elsif check_input body, confirm
-			res += "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. \nWith 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
-			image_sms sender, res, met_url 
+			message = "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. \nWith 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
+			met_url = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
+			image_sms sender, message, met_url 
+			sleep(1)
+			send_sms_to sender, "To help you gain insiprations, I will just collect art pieces from the MET!🥳"
+			sleep(3)
+			res += "Are you ready to discover something fun and new with me?"
 			session['last_intent'] = 'intro_done'
+		# elsif session['last_intent'] = "intro_done"
+		# 	send_sms_to sender, "Using one word or emoji to let me know what you have in mind and what topic you want to explore." 
+		# 	sleep(1)
+		# 	send_sms_to sender, "For example, you might think about animal at this moment, then, what animal specifically? You can send me 'monkey'/🐒, 'cat'/🐈, or 'elephant'/🐘." 
+		# 	session['last_intent'] = "begin_explore"
 		elsif check_input body, who_word
 			res += "It's CoArt Bot created by Estelle Jiang. <br>
 							If you want to know more about me, you can input 'fact' to the Body parameter."
@@ -221,10 +196,13 @@ def determine_response body, sender
 			options = { units: "metric", APPID: ENV["OPENWEATHER_API_KEY"] }
 			response = OpenWeather::Current.city("Pittsburgh, PA", options)
 			res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
-		elsif body == "sunflower"
-			response = MetMuseum::Collection.new.search('akasaka', {limit: 1})
-			#response = HTTParty.get('https://collectionapi.metmuseum.org/public/collection/v1/search?q=sunflowers')
-
+		elsif body == "sunflower" 
+			info = artwork_explorer body 
+			message = "Check what I got for you 🎁📖! This art piece is a " + info['object'] + " and it’s called " + info['title'] + ". Right now, 
+it belongs to " + info['department'] + " department at the MET. It was created by " + info['artist'] + " (" + info['bio'] + "). 
+As you can see, the medium for this art piece is " + info['medium'] + ". 🗂"
+			image_sms sender, message, info['image']
+			res += "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to learn more about this topic. You can also explore some new topic."
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
@@ -233,32 +211,49 @@ def determine_response body, sender
 		res  
 end 
 
-def determine_media_response body
+# def determine_media_response body
 
-	q = body.to_s.downcase.strip
+# 	q = body.to_s.downcase.strip
   
-	Giphy::Configuration.configure do |config|
-	  config.api_key = ENV["GIPHY_API_KEY"]
-	end
+# 	Giphy::Configuration.configure do |config|
+# 	  config.api_key = ENV["GIPHY_API_KEY"]
+# 	end
   
-	if q == "images"
-	  giphy_search = "hello"
-	elsif q == "fine"
-	  giphy_search = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
-	end
-	return giphy_search
+# 	if q == "images"
+# 	  giphy_search = "hello"
+# 	elsif q == "fine"
+# 	  giphy_search = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
+# 	end
+# 	return giphy_search
 
-	# unless giphy_search.nil?
-	#   results = Giphy.search( giphy_search, { limit: 25 } )
-	#   unless results.empty?
-	# 	gif = results.sample
-	# 	gif_url = gif.original_image.url
-	#   end
-	#   return gif_url
-	#  end 
+# 	# unless giphy_search.nil?
+# 	#   results = Giphy.search( giphy_search, { limit: 25 } )
+# 	#   unless results.empty?
+# 	# 	gif = results.sample
+# 	# 	gif_url = gif.original_image.url
+# 	#   end
+# 	#   return gif_url
+# 	#  end 
 
-	 nil
-  end
+# 	 nil
+#   end
+
+def artwork_explorer body
+	table = {}
+	response = MetMuseum::Collection.new.search(body, {limit: 10}) 
+	art = response.sample
+	table['object'] = art['objectName'].downcase
+	table['title'] = art['title']
+	table['department'] = art['department']
+	table['artist'] = art['artistDisplayName']
+	table['bio'] = art['artistDisplayBio']
+	table['medium'] = art['medium'].downcase
+	table['dimensions'] = art['dimensions']
+	table['image'] = art['primaryImageSmall']
+
+	return table
+end
+
 
 def send_sms_to send_to, message
 client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
