@@ -166,10 +166,10 @@ def determine_response body, sender
 			res += "Okay, let's start from museum 🎫🏛. Do you know the Metropolitan Museum of Art?"
 		elsif session['last_intent'] == "museum_intro"   
 		#elsif check_input body, confirm
-			message = "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. \nWith 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
+			message = "The Metropolitan Museum of Art of New York City, colloquially 'the Met', is the largest art museum in the United States. \n\nWith 6,479,548 visitors to its three locations in 2019, it was the fourth most visited art museum in the world."
 			met_url = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
 			image_sms sender, message, met_url 
-			sleep(8)
+			sleep(10)
 			send_sms_to sender, "To help you gain insiprations, I will just collect art pieces from the MET!🥳"
 			sleep(5)
 			res += "Are you ready to discover something fun and new with me?"
@@ -207,7 +207,6 @@ def determine_response body, sender
 			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to explore some new topic."
 			session['last_intent'] = 'continue_explore'
 			session['info_table'] = info.to_json
-			res += session['info_table']
 		elsif check_input body, next_move
 			res += "Sure, what else you want to explore?"
 			session['last_intent'] = 'begin_explore'
@@ -215,11 +214,11 @@ def determine_response body, sender
 			info_cont = JSON.parse(session['info_table'])
 			#res += info_cont['title']
 			#res += session['info_table']
-			if info['artist_url'] != ''
+			#if info['artist_url'] != ''
 				res += "I knew! It's a really good one. You can go to " + info['artist_url'] + "to take a closer look at this artist. Also, please check out " + info['met_url']
-			else 
-				res += "I knew! It's really amazing. You can go to " + info['met_url'] + " to check out more information and relevant pieces."
-			end
+			#else 
+				#res += "I knew! It's really amazing. You can go to " + info['met_url'] + " to check out more information and relevant pieces."
+			#end
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
