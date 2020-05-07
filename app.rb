@@ -139,7 +139,7 @@ def determine_response body, sender
 		confirm = ['Yes', 'I knew it.', 'Yes, I knew.', 'I have no idea', 'I do not know.', "I don't know"]
 		next_move = ['next topic', 'next keyword', 'new topic', 'new']
 		more_about = ['more info about this one', 'I want more', 'send me more info', 'send me more', 'more']
-		stop = ['stop', 'stop here', 'chat with you tomorrow', 'chat with you next time']
+		stop = ['see you tomorrow', 'stop here', 'chat with you tomorrow', 'chat with you next time']
 		who_word = ['who']
 		what_word = ['what', 'help', 'features', 'functions', 'actions']
 		where_word = ['where']
@@ -214,14 +214,13 @@ def determine_response body, sender
 			info_cont = JSON.parse(session['info_table'])
 			#res += info_cont['title']
 			#res += session['info_table']
-			puts info_cont['artist_url']
-			#if info_cont['artist_url'] != ''
+			#puts info_cont['artist_url']
+			if info_cont['artist_url'] != ''
 				message = "I knew! It's a really good one. You can go to " + info_cont['artist_url'] + "to take a closer look at this artist. Also, please check out " + info_cont['met_url']
-				send_sms_to sender, message
-			#else 
+			else 
 				#message += "I knew! It's really amazing. You can go to " + info_cont['met_url'] + " to check out more information and relevant pieces."
 				#send_sms_to sender message
-			#end
+			end
 			sleep(2)
 			res += "Let me know if you want to explore new topic! Or you can just stop here and chat with me tomorrow!"
 		elsif check_input body, stop 
