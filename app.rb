@@ -5,6 +5,7 @@ require 'httparty'
 require 'giphy'
 require 'open_weather'
 require 'met_museum'
+require 'json'
 
 configure :development do
 	require 'better_errors'
