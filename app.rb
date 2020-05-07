@@ -139,7 +139,7 @@ def determine_response body, sender
 		confirm = ['Yes', 'I knew it.', 'Yes, I knew.', 'I have no idea', 'I do not know.', "I don't know", "not really"]
 		next_move = ['next topic', 'next keyword', 'new topic', 'new']
 		more_about = ['more info about this one', 'I want more', 'send me more info', 'send me more', 'more']
-		stop = ['see you tomorrow', 'I will see you tomorrow', 'stop here', 'chat with you tomorrow', 'chat with you next time']
+		stop_message = ['see you tomorrow', 'I will see you tomorrow', 'stop here', 'chat with you tomorrow', 'chat with you next time']
 		who_word = ['who']
 		what_word = ['what', 'help', 'features', 'functions', 'actions']
 		where_word = ['where']
@@ -224,7 +224,7 @@ def determine_response body, sender
 			sleep(2)
 			res += "Let me know if you want to explore new topic! Or you can just stop here and chat with me tomorrow!"
 			session['last_intent'] = 'stop'
-		elsif check_input body, stop 
+		elsif check_input body, stop_message
 			session['last_intent'] = 'stop'
 			res += "Hope you learned something from me today 💯! It's my pleasure to talk with you! See you next time~ 👀"
 		else
