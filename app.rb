@@ -101,12 +101,12 @@ get '/sms/incoming' do
 	sender = params[:From] || ""
 	session['last_intent'] ||= nil
   
-	if session["counter"] == 1
-		message = "Thank for your first message."
-		media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
+	#if session["counter"] == 1
+		#message = "Thank for your first message."
+		#media = "https://media.giphy.com/media/13ZHjidRzoi7n2/giphy.gif" 
 		#media = 'https://www.metmuseum.org/-/media/images/visit/met-fifth-avenue/fifthave_teaser.jpg'
 		#media = nil
-	else
+	#else
 		message = determine_response body, sender
 		#media = determine_media_response body
 		media = nil
@@ -221,7 +221,7 @@ def determine_response body, sender
 			#else 
 				#message += "I knew! It's really amazing. You can go to " + info_cont['met_url'] + " to check out more information and relevant pieces."
 				#send_sms_to sender message
-			end
+			#end
 			sleep(2)
 			res += "Let me know if you want to explore new topic! Or you can just stop here and chat with me tomorrow!"
 		elsif check_input body, stop 
