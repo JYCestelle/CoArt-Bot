@@ -136,6 +136,7 @@ def determine_response body, sender
 		greeting_word = ['hey', 'hello', 'hi']
 		greeting_response = ['I am good', "I'm fine.", "I'm pretty good.", 'pretty good.', "It's okay.", 'fine', 'Good']
 		confirm = ['Yes', 'I knew it.', 'Yes, I knew.', 'I have no idea', 'I do not know.', "I don't know"]
+		next_move = ['next topic', 'next keyword', 'new topic']
 		who_word = ['who']
 		what_word = ['what', 'help', 'features', 'functions', 'actions']
 		where_word = ['where']
@@ -170,7 +171,7 @@ def determine_response body, sender
 			sleep(5)
 			res += "Are you ready to discover something fun and new with me?"
 			session['last_intent'] = 'intro_done'
-		elsif session['last_intent'] = "intro_done"
+		elsif session['last_intent'] == "intro_done"
 			send_sms_to sender, "Using one word or emoji to let me know what you have in mind and what topic you want to explore." 
 			sleep(3)
 			send_sms_to sender, "For example, you might think about animal at this moment, then, what animal specifically? You can send me 'monkey'/🐒, 'cat'/🐈, or 'elephant'/🐘." 
@@ -196,7 +197,8 @@ def determine_response body, sender
 			options = { units: "metric", APPID: ENV["OPENWEATHER_API_KEY"] }
 			response = OpenWeather::Current.city("Pittsburgh, PA", options)
 			res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
-		elsif body == "sunflower" 
+		elsif session['last_intent'] == "begin_explore"
+		#elsif body == "sunflower" 
 			info = artwork_explorer body 
 			message = "Check what I got for you 🎁📖! This art piece is a " + info['object'] + " and it’s called " + info['title'] + ". Right now, 
 it belongs to " + info['department'] + " department at the MET. It was created by " + info['artist'] + " (" + info['bio'] + "). 
@@ -204,6 +206,9 @@ As you can see, the medium for this art piece is " + info['medium'] + ". 🗂"
 			image_sms sender, message, info['image']
 			sleep(10)
 			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to learn more about this topic. You can also explore some new topic."
+			#session['last_intent'] = ''
+		elsif check_input body, next_move
+			res += "Sure, what else you want to explore?"
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
