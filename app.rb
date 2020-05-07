@@ -137,6 +137,7 @@ def determine_response body, sender
 		greeting_response = ['I am good', "I'm fine.", "I'm pretty good.", 'pretty good.', "It's okay.", 'fine', 'Good']
 		confirm = ['Yes', 'I knew it.', 'Yes, I knew.', 'I have no idea', 'I do not know.', "I don't know"]
 		next_move = ['next topic', 'next keyword', 'new topic', 'new']
+		more_about = ['more info about this one', 'I want more', 'send me more info', 'send me more', 'more']
 		who_word = ['who']
 		what_word = ['what', 'help', 'features', 'functions', 'actions']
 		where_word = ['where']
@@ -151,6 +152,7 @@ def determine_response body, sender
 		jokes = IO.readlines("jokes.txt")
 		facts = IO.readlines("facts.txt")
 		met_url = ''
+		session['info_table'] ||= nil
 
 		if check_input body, greeting_word
 			send_sms_to sender, "Hi 🙌🏼, this is CoArt 🤖! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
@@ -198,16 +200,23 @@ def determine_response body, sender
 		# 	res = "Today's weather in pittsburgh is " + response['weather'][0]['main']
 		elsif session['last_intent'] == "begin_explore"
 			info = artwork_explorer body 
-			message = "Check what I got for you 🎁📖! This art piece is a " + info['object'] + " and it’s called " + info['title'] + ". Right now, 
-it belongs to " + info['department'] + " department at the MET. It was created by " + info['artist'] + " (" + info['bio'] + "). 
-As you can see, the medium for this art piece is " + info['medium'] + ". 🗂"
+			message = "Check what I got for you 🎁📖! This art piece is a " + info['object'] + " and it’s called " + info['title'] + ". Right now, it belongs to " + info['department'] + " department at the MET. It was created by " + info['artist'] + " (" + info['bio'] + "). As you can see, the medium for this art piece is " + info['medium'] + ". 🗂"
 			image_sms sender, message, info['image']
 			sleep(10)
-			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to learn more about this topic. You can also explore some new topic."
+			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to explore some new topic."
 			session['last_intent'] = 'continue_explore'
+			session['info_table'] = info.to_json
 		elsif check_input body, next_move
 			res += "Sure, what else you want to explore?"
 			session['last_intent'] = 'begin_explore'
+		elsif check_input body, more_about
+			info_cont = JSON.parse(session['info_tabe'])
+			res += info_cont['artist_url']
+			# if info['artist_url'] != ''
+			# 	res += "I knew! It's a really good one. You can go to " + info['artist_url'] + "to take a closer look at this artist. Also, please check out " + info['met_url']
+			# else 
+			# 	res += "I knew! It's really amazing. You can go to " + info['met_url'] + " to check out more information and relevant pieces."
+			# end
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
@@ -255,6 +264,8 @@ def artwork_explorer body
 	table['medium'] = art['medium'].downcase
 	table['dimensions'] = art['dimensions']
 	table['image'] = art['primaryImageSmall']
+	table['artist_url'] = art['artistWikidata_URL']
+	table['met_url'] = art['objectURL']
 
 	return table
 end
