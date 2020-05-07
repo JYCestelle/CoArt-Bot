@@ -171,7 +171,6 @@ def determine_response body, sender
 			image_sms sender, message, met_url 
 			sleep(10)
 			send_sms_to sender, "To help you gain insiprations, I will just collect art pieces from the MET!🥳"
-			sleep(5)
 			res += "Are you ready to discover something fun and new with me?"
 			session['last_intent'] = 'intro_done'
 		elsif session['last_intent'] == "intro_done"
