@@ -214,7 +214,7 @@ def determine_response body, sender
 			#res += info_cont['title']
 			#res += session['info_table']
 			#if info['artist_url'] != ''
-				res += "I knew! It's a really good one. You can go to " + info['artist_url'] + "to take a closer look at this artist. Also, please check out " + info['met_url']
+				res += "I knew! It's a really good one. You can go to " + info_cont['artist_url'] + "to take a closer look at this artist. Also, please check out " + info_cont['met_url']
 			#else 
 				#res += "I knew! It's really amazing. You can go to " + info['met_url'] + " to check out more information and relevant pieces."
 			#end
