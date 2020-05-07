@@ -217,7 +217,7 @@ def determine_response body, sender
 			puts info_cont['artist_url']
 			#if info_cont['artist_url'] != ''
 				message = "I knew! It's a really good one. You can go to " + info_cont['artist_url'] + "to take a closer look at this artist. Also, please check out " + info_cont['met_url']
-				send_sms_to sender message
+				send_sms_to sender, message
 			#else 
 				#message += "I knew! It's really amazing. You can go to " + info_cont['met_url'] + " to check out more information and relevant pieces."
 				#send_sms_to sender message
