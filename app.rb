@@ -206,11 +206,12 @@ def determine_response body, sender
 			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to explore some new topic."
 			session['last_intent'] = 'continue_explore'
 			session['info_table'] = info.to_json
+			res += session['info_table']
 		elsif check_input body, next_move
 			res += "Sure, what else you want to explore?"
 			session['last_intent'] = 'begin_explore'
 		elsif check_input body, more_about
-			info_cont = JSON.parse(session['info_tabe'])
+			info_cont = JSON.parse(session['info_table'])
 			res += info_cont['artist_url']
 			# if info['artist_url'] != ''
 			# 	res += "I knew! It's a really good one. You can go to " + info['artist_url'] + "to take a closer look at this artist. Also, please check out " + info['met_url']
