@@ -223,9 +223,9 @@ def determine_response body, sender
 			#end
 			sleep(2)
 			res += "Let me know if you want to explore new topic! Or you can just stop here and chat with me tomorrow!"
-			session['last_intent'] = 'stop'
+			session['last_intent'] = 'stop_here'
 		elsif check_input body, stop_message
-			session['last_intent'] = 'stop'
+			session['last_intent'] = 'stop_here'
 			res += "Hope you learned something from me today 💯! It's my pleasure to talk with you! See you next time~ 👀"
 		else
 			# Sending unexpected answer to the Slack Channel
