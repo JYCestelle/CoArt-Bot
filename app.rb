@@ -136,10 +136,10 @@ def determine_response body, sender
 		#keyword lists
 		greeting_word = ['hey', 'hello', 'hi']
 		greeting_response = ['I am good', "I'm fine.", "I'm pretty good.", 'pretty good.', "It's okay.", 'fine', 'Good']
-		confirm = ['Yes', 'I knew it.', 'Yes, I knew.', 'I have no idea', 'I do not know.', "I don't know"]
+		confirm = ['Yes', 'I knew it.', 'Yes, I knew.', 'I have no idea', 'I do not know.', "I don't know", "not really"]
 		next_move = ['next topic', 'next keyword', 'new topic', 'new']
 		more_about = ['more info about this one', 'I want more', 'send me more info', 'send me more', 'more']
-		stop = ['see you tomorrow', 'stop here', 'chat with you tomorrow', 'chat with you next time']
+		stop = ['see you tomorrow', 'I will see you tomorrow', 'stop here', 'chat with you tomorrow', 'chat with you next time']
 		who_word = ['who']
 		what_word = ['what', 'help', 'features', 'functions', 'actions']
 		where_word = ['where']
@@ -157,7 +157,7 @@ def determine_response body, sender
 		session['info_table'] ||= nil
 
 		if check_input body, greeting_word
-			send_sms_to sender, "Hi 🙌🏼, this is CoArt 🤖! Really nice to see you here. My purpose is to help you generate ideas and get inspirations from artworks exploration."
+			send_sms_to sender, "Hi 🙌🏼, welcome to CoArt Bot🤖! You can call me Artee 🎨🌚. Really nice to see you here. I am trying to help you generate ideas and get inspirations from artworks exploration."
 			sleep(1)
 			send_sms_to sender, "How are you?"
 			sleep(3)
@@ -218,13 +218,13 @@ def determine_response body, sender
 			if info_cont['artist_url'] != ''
 				message = "I knew! It's a really good one. You can go to " + info_cont['artist_url'] + "to take a closer look at this artist. Also, please check out " + info_cont['met_url']
 			else 
-				#message += "I knew! It's really amazing. You can go to " + info_cont['met_url'] + " to check out more information and relevant pieces."
-				#send_sms_to sender message
+				message += "I knew! It's really amazing. You can go to " + info_cont['met_url'] + " to check out more information and relevant pieces."
+				send_sms_to sender message
 			end
 			sleep(2)
 			res += "Let me know if you want to explore new topic! Or you can just stop here and chat with me tomorrow!"
 		elsif check_input body, stop 
-			res += "Hope you learned something from me today! It's my pleasure to talk with you! See you next time~"
+			res += "Hope you learned something from me today 💯! It's my pleasure to talk with you! See you next time~ 👀"
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
