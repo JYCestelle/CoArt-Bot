@@ -203,7 +203,7 @@ def determine_response body, sender
 			message = "Check what I got for you 🎁📖! This art piece is a " + info['object'] + " and it’s called " + info['title'] + ". Right now, it belongs to " + info['department'] + " department at the MET. It was created by " + info['artist'] + " (" + info['bio'] + "). As you can see, the medium for this art piece is " + info['medium'] + ". 🗂"
 			image_sms sender, message, info['image']
 			sleep(10)
-			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to explore some new topic."
+			send_sms_to sender, "Sounds good to you? Let me know whether you want to know more about this artwork, or you want to explore some new topic. You can also say 'stop' and chat with me when you're free. "
 			session['last_intent'] = 'continue_explore'
 			session['info_table'] = info.to_json
 		elsif check_input body, next_move
@@ -213,11 +213,15 @@ def determine_response body, sender
 			info_cont = JSON.parse(session['info_table'])
 			#res += info_cont['title']
 			#res += session['info_table']
-			#if info['artist_url'] != ''
-				res += "I knew! It's a really good one. You can go to " + info_cont['artist_url'] + "to take a closer look at this artist. Also, please check out " + info_cont['met_url']
-			#else 
-				#res += "I knew! It's really amazing. You can go to " + info['met_url'] + " to check out more information and relevant pieces."
-			#end
+			if info_cont['artist_url'] != ''
+				message = "I knew! It's a really good one. You can go to " + info_cont['artist_url'] + "to take a closer look at this artist. Also, please check out " + info_cont['met_url']
+				send_sms_to sender message
+			else 
+				res += "I knew! It's really amazing. You can go to " + info_cont['met_url'] + " to check out more information and relevant pieces."
+				send_sms_to sender message
+			end
+			sleep(2)
+			res += "Let me know if you want to explore new topic! Or you can just stop here and chat with me tomorrow!"
 		else
 			# Sending unexpected answer to the Slack Channel
 			res = send_to_slack body
