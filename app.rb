@@ -110,7 +110,7 @@ get '/sms/incoming' do
 		message = determine_response body, sender
 		#media = determine_media_response body
 		media = nil
-	end
+	#end
 
 	# Build a twilio response object 
 	twiml = Twilio::TwiML::MessagingResponse.new do |r|
